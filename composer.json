@@ -1,0 +1,19 @@
+{
+  "name": "novatorgroup/brand-tools",
+  "version": "2.0.0",
+  "description": "Novator Price Service Brand Tools",
+  "authors": [
+    {
+      "name": "Melnikov Ruslan",
+      "email": "novatorgroup@gmail.com"
+    }
+  ],
+  "require": {
+    "yiisoft/yii2": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "novatorgroup\\brandtools\\": ""
+    }
+  }
+}
