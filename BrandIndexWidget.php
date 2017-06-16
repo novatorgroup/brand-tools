@@ -33,6 +33,7 @@ class BrandIndexWidget extends \yii\base\Widget
 
         echo Html::beginTag('div', ['class' => $this->wrapperClass]);
 
+        $n = 0;
         foreach ($letters as $letter => $brands) {
             echo Html::beginTag('div', ['class' => $this->letterClass]);
             echo Html::tag('b', $letter);
@@ -46,6 +47,10 @@ class BrandIndexWidget extends \yii\base\Widget
             }
             echo Html::endTag('ul');
             echo Html::endTag('div');
+            if (++$n == 12) { //TODO костыль
+                echo Html::endTag('div');
+                echo Html::beginTag('div', ['class' => $this->wrapperClass]);
+            }
         }
 
         echo Html::endTag('div');
