@@ -22,7 +22,7 @@ class ItemBrandsService extends Component
      * @param array $brandIds
      * @return array
      */
-    public function loadIndex(array $brandIds)
+    public function loadIndex(array $brandIds = [])
     {
         return $this->request('load-index', [
             'brands' => $brandIds

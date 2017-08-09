@@ -19,4 +19,11 @@ This is the code for a particular project.
         'letterClass' => 'letter',
         'listClass' => 'list-unstyled hidden'
     ]);
+    
+    // Widget (this logos)
+    echo BrandListWidget::widget([
+        'list' => $this->listBrandIndex(),
+        'wrapperClass' => 'brand-wrapper',
+        'itemClass' => 'brand',
+    ]);
 ```
