@@ -16,8 +16,6 @@ class BrandIndexWidget extends \yii\base\Widget
      */
     public $list;
 
-    public $currentId;
-
     public $wrapperClass = 'brand-wrapper';
     public $itemClass = 'brand';
 
@@ -25,7 +23,8 @@ class BrandIndexWidget extends \yii\base\Widget
     {
         echo Html::beginTag('div', ['class' => $this->wrapperClass]);
         foreach ($this->list as $brand) {
-            Html::a('', ['brand/view', 'id' => $brand['id']], [
+            echo Html::a('', ['brand/view', 'id' => $brand['id']], [
+                'tille' => $brand['title'],
                 'class' => $this->itemClass,
                 'style' => 'background-image: url(' . $brand['logo'] . ')'
             ]);
