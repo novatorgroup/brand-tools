@@ -5,7 +5,7 @@ namespace novatorgroup\brandtools;
 use yii\helpers\Html;
 
 /**
- * Widget for listing brands
+ * Widget for listing brands (with logo)
  * Class BrandIndexWidget
  * @package novatorgroup\brandtools
  */
@@ -18,41 +18,18 @@ class BrandIndexWidget extends \yii\base\Widget
 
     public $currentId;
 
-    public $wrapperClass = 'brand-sidebar';
-    public $letterClass = 'letter';
-    public $listClass = 'list-unstyled';
+    public $wrapperClass = 'brand-wrapper';
+    public $itemClass = 'brand';
 
     public function run()
     {
-        $letters = [];
-
-        foreach ($this->list as $id => $title) {
-            $letter = strtoupper(mb_substr($title, 0, 1, 'UTF-8'));
-            $letters[$letter][$id] = $title;
-        }
-
         echo Html::beginTag('div', ['class' => $this->wrapperClass]);
-
-        $n = 0;
-        foreach ($letters as $letter => $brands) {
-            echo Html::beginTag('div', ['class' => $this->letterClass]);
-            echo Html::tag('b', $letter);
-            echo Html::beginTag('ul', ['class' => $this->listClass]);
-            foreach ($brands as $id => $title) {
-                if ($id == $this->currentId) {
-                    echo Html::tag('li', $title, ['class' => 'brand-current']);
-                } else {
-                    echo Html::tag('li', Html::a($title, ['brand/view', 'id' => $id]));
-                }
-            }
-            echo Html::endTag('ul');
-            echo Html::endTag('div');
-            if (++$n == 12) { //TODO костыль
-                echo Html::endTag('div');
-                echo Html::beginTag('div', ['class' => $this->wrapperClass]);
-            }
+        foreach ($this->list as $brand) {
+            Html::a('', ['brand/view', 'id' => $brand['id']], [
+                'class' => $this->itemClass,
+                'style' => 'background-image: url(' . $brand['logo'] . ')'
+            ]);
         }
-
         echo Html::endTag('div');
     }
 }
