@@ -28,7 +28,7 @@ class BrandListWidget extends \yii\base\Widget
 
         foreach ($this->list as $brand) {
             $letter = strtoupper(mb_substr($brand['title'], 0, 1, 'UTF-8'));
-            $letters[$letter][$brand['id']] = $brand['title'];
+            $letters[$letter][$brand['slug']] = $brand['title'];
         }
 
         echo Html::beginTag('div', ['class' => $this->wrapperClass]);
@@ -37,11 +37,11 @@ class BrandListWidget extends \yii\base\Widget
             echo Html::beginTag('div', ['class' => $this->letterClass]);
             echo Html::tag('b', $letter);
             echo Html::beginTag('ul', ['class' => $this->listClass]);
-            foreach ($brands as $id => $title) {
-                if ($id == $this->currentId) {
+            foreach ($brands as $slug => $title) {
+                if ($slug == $this->currentId) {
                     echo Html::tag('li', $title, ['class' => 'brand-current']);
                 } else {
-                    echo Html::tag('li', Html::a($title, ['brand/view', 'id' => $id]));
+                    echo Html::tag('li', Html::a($title, ['brand/page', 'slug' => $slug]));
                 }
             }
             echo Html::endTag('ul');
