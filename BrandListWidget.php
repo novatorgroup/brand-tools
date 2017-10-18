@@ -54,16 +54,18 @@ class BrandListWidget extends \yii\base\Widget
             $td_letters .= Html::tag('td', $letter, ['data-letter' => $letter]);
 
             $list = Html::beginTag('ul', ['class' => 'list-unstyled']);
+            $hidden = ' hidden';
             foreach ($brands as $slug => $title) {
                 if ($slug == $this->currentId) {
                     $list .= Html::tag('li', $title, ['class' => 'brand-current', 'data-letter' => $letter]);
+                    $hidden = '';
                 } else {
                     $list .= Html::tag('li', Html::a($title, ['brand/page', 'slug' => $slug]));
                 }
             }
             $list .= Html::endTag('ul');
 
-            $td_lists .= Html::tag('div', $list, ['class' => 'brand-list hidden', 'data-letter' => $letter]);
+            $td_lists .= Html::tag('div', $list, ['class' => 'brand-list' . $hidden, 'data-letter' => $letter]);
 
             $n++;
             if ($n % $this->columns == 0) {
@@ -91,11 +93,6 @@ class BrandListWidget extends \yii\base\Widget
                     $(this).parent().next().find('.brand-list[data-letter="' + letter + '"]').removeClass('hidden');
                 }
             });
-
-            var letter = $('.brand-current').data('letter');
-            if (letter) {    
-                $('.$this->wrapperClass td[data-letter="' + letter + '"]').click();
-            }
 JS;
         $this->view->registerJs($js);
     }
