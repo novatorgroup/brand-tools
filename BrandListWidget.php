@@ -2,6 +2,7 @@
 
 namespace novatorgroup\brandtools;
 
+use Yii;
 use yii\helpers\Html;
 
 /**
@@ -16,11 +17,23 @@ class BrandListWidget extends \yii\base\Widget
      */
     public $list;
 
+    /**
+     * @var string active brand
+     */
     public $currentId;
 
+    public $columns = 4;
+
     public $wrapperClass = 'brand-sidebar';
-    public $letterClass = 'letter';
-    public $listClass = 'list-unstyled';
+
+    public function init()
+    {
+        parent::init();
+
+        if (empty($this->currentId)) {
+            $this->currentId = Yii::$app->request->get('slug');
+        }
+    }
 
     public function run()
     {
@@ -31,23 +44,59 @@ class BrandListWidget extends \yii\base\Widget
             $letters[$letter][$brand['slug']] = $brand['title'];
         }
 
-        echo Html::beginTag('div', ['class' => $this->wrapperClass]);
+        echo Html::beginTag('table', ['class' => $this->wrapperClass]);
 
+        $n = 0;
+        $td_letters = '';
+        $td_lists = '';
         foreach ($letters as $letter => $brands) {
-            echo Html::beginTag('div', ['class' => $this->letterClass]);
-            echo Html::tag('b', $letter);
-            echo Html::beginTag('ul', ['class' => $this->listClass]);
+
+            $td_letters .= Html::tag('td', $letter, ['data-letter' => $letter]);
+
+            $list = Html::beginTag('ul', ['class' => 'list-unstyled']);
             foreach ($brands as $slug => $title) {
                 if ($slug == $this->currentId) {
-                    echo Html::tag('li', $title, ['class' => 'brand-current']);
+                    $list .= Html::tag('li', $title, ['class' => 'brand-current', 'data-letter' => $letter]);
                 } else {
-                    echo Html::tag('li', Html::a($title, ['brand/page', 'slug' => $slug]));
+                    $list .= Html::tag('li', Html::a($title, ['brand/page', 'slug' => $slug]));
                 }
             }
-            echo Html::endTag('ul');
-            echo Html::endTag('div');
+            $list .= Html::endTag('ul');
+
+            $td_lists .= Html::tag('div', $list, ['class' => 'brand-list hidden', 'data-letter' => $letter]);
+
+            $n++;
+            if ($n % $this->columns == 0) {
+                echo Html::tag('tr', $td_letters);
+                echo Html::tag('tr', Html::tag('td', $td_lists, ['colspan' => $this->columns]));
+
+                $n = 0;
+                $td_letters = '';
+                $td_lists = '';
+            }
         }
 
-        echo Html::endTag('div');
+        echo Html::endTag('table');
+
+        $this->registerJs();
+    }
+
+    private function registerJs()
+    {
+        $js = <<<JS
+            $('.$this->wrapperClass td').click(function() {
+                var letter = $(this).data('letter');
+                if (letter) {
+                $('.brand-list').addClass('hidden');
+                    $(this).parent().next().find('.brand-list[data-letter="' + letter + '"]').removeClass('hidden');
+                }
+            });
+
+            var letter = $('.brand-current').data('letter');
+            if (letter) {    
+                $('.$this->wrapperClass td[data-letter="' + letter + '"]').click();
+            }
+JS;
+        $this->view->registerJs($js);
     }
 }
