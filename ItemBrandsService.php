@@ -6,8 +6,6 @@ use yii\base\Component;
 
 /**
  * Components for obtaining brand data from the site https://price.novator-group.ru/
- * Class ItemBrandsService
- * @package novatorgroup\brandtools
  */
 class ItemBrandsService extends Component
 {

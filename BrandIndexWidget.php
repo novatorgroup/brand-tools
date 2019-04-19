@@ -6,8 +6,6 @@ use yii\helpers\Html;
 
 /**
  * Widget for listing brands (with logo)
- * Class BrandIndexWidget
- * @package novatorgroup\brandtools
  */
 class BrandIndexWidget extends \yii\base\Widget
 {
@@ -26,9 +24,12 @@ class BrandIndexWidget extends \yii\base\Widget
             echo Html::a('', ['brand/page', 'slug' => $brand['slug']], [
                 'title' => $brand['title'],
                 'class' => $this->itemClass,
-                'style' => 'background-image: url(' . $brand['logo'] . ')'
+                'data-src' => $brand['logo']
             ]);
         }
         echo Html::endTag('div');
+
+        $this->view->registerAssetBundle(LazyAsset::class);
+        $this->view->registerJs('jQuery(".' . $this->itemClass . '").Lazy();');
     }
 }

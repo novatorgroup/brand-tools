@@ -7,8 +7,6 @@ use yii\helpers\Html;
 
 /**
  * Widget for listing brands
- * Class BrandIndexWidget
- * @package novatorgroup\brandtools
  */
 class BrandListWidget extends \yii\base\Widget
 {
