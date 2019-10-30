@@ -16,12 +16,18 @@ class BrandListWidget extends \yii\base\Widget
     public $list;
 
     /**
-     * @var string active brand
+     * @var string - Active brand
      */
     public $currentId;
 
+    /**
+     * @var int
+     */
     public $columns = 4;
 
+    /**
+     * @var string
+     */
     public $wrapperClass = 'brand-sidebar';
 
     public function init()
@@ -38,18 +44,18 @@ class BrandListWidget extends \yii\base\Widget
         $letters = [];
 
         foreach ($this->list as $brand) {
-            $letter = strtoupper(mb_substr($brand['title'], 0, 1, 'UTF-8'));
+            $letter = mb_strtoupper(mb_substr($brand['title'], 0, 1, 'UTF-8'));
             $letters[$letter][$brand['slug']] = $brand['title'];
         }
 
         echo Html::beginTag('table', ['class' => $this->wrapperClass]);
 
         $n = 0;
-        $td_letters = '';
+        $td_letters = [];
         $td_lists = '';
         foreach ($letters as $letter => $brands) {
 
-            $td_letters .= Html::tag('td', $letter, ['data-letter' => $letter]);
+            $td_letters[] = Html::tag('td', $letter, ['data-letter' => $letter]);
 
             $list = Html::beginTag('ul', ['class' => 'list-unstyled']);
             $hidden = ' hidden';
@@ -67,13 +73,21 @@ class BrandListWidget extends \yii\base\Widget
 
             $n++;
             if ($n % $this->columns == 0) {
-                echo Html::tag('tr', $td_letters);
+                echo Html::tag('tr', implode('', $td_letters));
                 echo Html::tag('tr', Html::tag('td', $td_lists, ['colspan' => $this->columns]));
 
                 $n = 0;
-                $td_letters = '';
+                $td_letters = [];
                 $td_lists = '';
             }
+        }
+
+        if (count($td_letters)) {
+            for ($i = 0; $i < $this->columns - count($td_letters); $i++) {
+                $td_letters[] = Html::tag('td');
+            }
+            echo Html::tag('tr', implode('', $td_letters));
+            echo Html::tag('tr', Html::tag('td', $td_lists, ['colspan' => $this->columns]));
         }
 
         echo Html::endTag('table');
@@ -84,11 +98,11 @@ class BrandListWidget extends \yii\base\Widget
     private function registerJs()
     {
         $js = <<<JS
-            $('.$this->wrapperClass td').click(function() {
-                var letter = $(this).data('letter');
+            jQuery('.$this->wrapperClass td').click(function() {
+                const letter = jQuery(this).data('letter');
                 if (letter) {
-                $('.brand-list').addClass('hidden');
-                    $(this).parent().next().find('.brand-list[data-letter="' + letter + '"]').removeClass('hidden');
+                    jQuery('.brand-list').addClass('hidden');
+                    jQuery(this).parent().next().find('.brand-list[data-letter="' + letter + '"]').removeClass('hidden');
                 }
             });
 JS;
