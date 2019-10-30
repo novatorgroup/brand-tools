@@ -83,7 +83,7 @@ class BrandListWidget extends \yii\base\Widget
         }
 
         if (count($td_letters)) {
-            for ($i = 0; $i < $this->columns - count($td_letters); $i++) {
+            for ($i = 0; $i < $this->columns - count($td_letters) + 1; $i++) {
                 $td_letters[] = Html::tag('td');
             }
             echo Html::tag('tr', implode('', $td_letters));
