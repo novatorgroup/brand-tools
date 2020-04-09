@@ -20,10 +20,11 @@ This is the code for a particular project.
         'listClass' => 'list-unstyled hidden'
     ]);
     
-    // Widget (this logos)
+    // Widget
     echo BrandListWidget::widget([
         'list' => $this->listBrandIndex(),
         'wrapperClass' => 'brand-wrapper',
         'itemClass' => 'brand',
+        'template' => BrandListWidget::TEMPLATE_VERTICAL,
     ]);
 ```

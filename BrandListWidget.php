@@ -3,6 +3,8 @@
 namespace novatorgroup\brandtools;
 
 use Yii;
+use yii\bootstrap\Button;
+use yii\bootstrap\Dropdown;
 use yii\helpers\Html;
 
 /**
@@ -10,6 +12,9 @@ use yii\helpers\Html;
  */
 class BrandListWidget extends \yii\base\Widget
 {
+    public const TEMPLATE_VERTICAL = 'vertical';
+    public const TEMPLATE_HORIZONTAL = 'horizontal';
+
     /**
      * @var array
      */
@@ -30,6 +35,8 @@ class BrandListWidget extends \yii\base\Widget
      */
     public $wrapperClass = 'brand-sidebar';
 
+    public $template = self::TEMPLATE_VERTICAL;
+
     public function init()
     {
         parent::init();
@@ -41,13 +48,26 @@ class BrandListWidget extends \yii\base\Widget
 
     public function run()
     {
-        $letters = [];
+        $letters = $this->brandLetters();
+        if ($this->template == self::TEMPLATE_VERTICAL) {
+            $this->renderVertival($letters);
+        } else {
+            $this->renderHorizontal($letters);
+        }
+    }
 
+    private function brandLetters(): array
+    {
+        $letters = [];
         foreach ($this->list as $brand) {
             $letter = mb_strtoupper(mb_substr($brand['title'], 0, 1, 'UTF-8'));
             $letters[$letter][$brand['slug']] = $brand['title'];
         }
+        return $letters;
+    }
 
+    private function renderVertival(array $letters): void
+    {
         echo Html::beginTag('table', ['class' => $this->wrapperClass]);
 
         $n = 0;
@@ -93,6 +113,22 @@ class BrandListWidget extends \yii\base\Widget
         echo Html::endTag('table');
 
         $this->registerJs();
+    }
+
+    private function renderHorizontal(array $letters): void
+    {
+        echo Html::beginTag('div', ['class' => $this->wrapperClass]);
+        foreach ($letters as $letter => $brands) {
+            echo Html::beginTag('div', ['class' => 'btn-group']);
+            echo Html::button($letter, ['class' => 'btn btn-default dropdown-toggle', 'data-toggle' => 'dropdown']);
+            echo Html::beginTag('ul', ['class' => 'dropdown-menu']);
+            foreach ($brands as $slug => $title) {
+                echo Html::tag('li', Html::a($title, ['brand/page', 'slug' => $slug]));
+            }
+            echo Html::endTag('ul');
+            echo Html::endTag('div');
+        }
+        echo Html::endTag('div');
     }
 
     private function registerJs()

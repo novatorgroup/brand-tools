@@ -1,6 +1,6 @@
 {
   "name": "novatorgroup/brand-tools",
-  "version": "2.1.2",
+  "version": "2.2.0",
   "description": "Novator Price Service Brand Tools",
   "authors": [
     {
@@ -9,6 +9,7 @@
     }
   ],
   "require": {
+    "php": ">=7.2.0",
     "yiisoft/yii2": "*",
     "bower-asset/jquery-lazy": "*"
   },
