@@ -112,7 +112,16 @@ class BrandListWidget extends \yii\base\Widget
 
         echo Html::endTag('table');
 
-        $this->registerJs();
+        $js = <<<JS
+            jQuery('.$this->wrapperClass td').on('click', function() {
+                const letter = jQuery(this).data('letter');
+                if (letter) {
+                    jQuery('.brand-list').addClass('hidden');
+                    jQuery(this).parent().next().find('.brand-list[data-letter="' + letter + '"]').removeClass('hidden');
+                }
+            });
+JS;
+        $this->view->registerJs($js);
     }
 
     private function renderHorizontal(array $letters): void
@@ -120,7 +129,7 @@ class BrandListWidget extends \yii\base\Widget
         echo Html::beginTag('div', ['class' => $this->wrapperClass]);
         foreach ($letters as $letter => $brands) {
             echo Html::beginTag('div', ['class' => 'btn-group']);
-            echo Html::button($letter, ['class' => 'btn btn-default dropdown-toggle', 'data-toggle' => 'dropdown']);
+            echo Html::button($letter, ['class' => 'btn btn-default dropdown-toggle']);
             echo Html::beginTag('ul', ['class' => 'dropdown-menu']);
             foreach ($brands as $slug => $title) {
                 echo Html::tag('li', Html::a($title, ['brand/page', 'slug' => $slug]));
@@ -129,17 +138,15 @@ class BrandListWidget extends \yii\base\Widget
             echo Html::endTag('div');
         }
         echo Html::endTag('div');
-    }
 
-    private function registerJs()
-    {
         $js = <<<JS
-            jQuery('.$this->wrapperClass td').click(function() {
-                const letter = jQuery(this).data('letter');
-                if (letter) {
-                    jQuery('.brand-list').addClass('hidden');
-                    jQuery(this).parent().next().find('.brand-list[data-letter="' + letter + '"]').removeClass('hidden');
-                }
+            jQuery('.$this->wrapperClass button').on('click', function() {
+                jQuery('.btn-group.open').removeClass('open');
+                jQuery(this).parent().addClass('open');
+                return false;
+            });
+            jQuery(document).on('click', function() {
+                jQuery('.btn-group.open').removeClass('open');
             });
 JS;
         $this->view->registerJs($js);
