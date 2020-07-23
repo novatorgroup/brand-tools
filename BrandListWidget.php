@@ -3,8 +3,6 @@
 namespace novatorgroup\brandtools;
 
 use Yii;
-use yii\bootstrap\Button;
-use yii\bootstrap\Dropdown;
 use yii\helpers\Html;
 
 /**

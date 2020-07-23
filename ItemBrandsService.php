@@ -17,29 +17,29 @@ class ItemBrandsService extends Component
 
     /**
      * Load brand index
-     * @param array $brandIds
+     * @param array $params
+     * [
+     *      'ids' => [...],
+     *      'novator' => 1
+     * ]
      * @return array
      */
-    public function loadIndex(array $brandIds = [])
+    public function loadIndex(array $params = []): ?array
     {
-        return $this->request('load-index', [
-            'brands' => $brandIds
-        ]);
+        return $this->request('load-index', $params);
     }
 
     /**
      * Load brand info
-     * @param $brandId
+     * @param $brandIdOrSlug
      * @return array
      */
-    public function loadPage($brandId)
+    public function loadPage($brandIdOrSlug): ?array
     {
-        return $this->request('load-page', [
-            'id' => $brandId
-        ]);
+        return $this->request('load-page', ['id' => $brandIdOrSlug]);
     }
 
-    private function request($url, $data)
+    private function request(string $url, array $params = []): ?array
     {
         $ch = curl_init();
         curl_setopt_array($ch, [
@@ -51,15 +51,15 @@ class ItemBrandsService extends Component
             CURLOPT_SSL_VERIFYHOST => false,
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_POSTREDIR => 3,
-            CURLOPT_POSTFIELDS => http_build_query($data)
+            CURLOPT_POSTFIELDS => http_build_query($params)
         ]);
 
         $response = curl_exec($ch);
 
         if (curl_errno($ch) || empty($response)) {
-            return false;
+            return null;
         }
 
-        return @json_decode($response, true);
+        return json_decode($response, true);
     }
 }
